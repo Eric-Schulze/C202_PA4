@@ -97,14 +97,16 @@ public class PA4{
     
     /***************************************************************************************/
     
-    /* public void compareFileAgainstDictionary
-     *
+    /* public void compareFileAgainstDictionary brings in the fileName of the file required to compare against the
+     *              dictionary, then parses each string so that is only has lower case letters and uses this string 
+     *              to compare against the dictionary by calling the isInDictionary method. This method also increases the
+     *              wordFound and wordNotFound counters accordingly
      *
      * @param fileName: name of the file to do a word-by-word comparison to dictionary
      * @return none
      *
-     * @requires
-     * @ensures
+     * @requires fileName is not empty
+     * @ensures every string in fileName is compared to dictionary and wordFound and wordNotFound counters are adjusted accordingly
      *
      */
     public void compareFileAgainstDictionary(String fileName){
@@ -155,14 +157,14 @@ public class PA4{
     /***************************************************************************************/
     
     /* public boolean isInDictionary returns true if the incoming word is in the dictionary array and
-     *          returns false otherwise
+     *          returns false otherwise and increases the appropriate comparisons count accordingly
      *
      * @param word: string to check to see if it is contained in the dictionary
      * @return boolean
      *
-     * @requires
-     * @ensures
-     *
+     * @requires |word| > 0
+     * @ensures returns true if word is in dictionary and comparisonsIfWordFound is increased by the returned
+     *          comparisonsCount if word is found, otherwise returns false and comparisonsIfWordNotFound is increased
      */
     public boolean isInDictionary(String word){
         int[] comparisonsCount = new int[1];
@@ -174,9 +176,5 @@ public class PA4{
             comparisonsIfWordNotFound += comparisonsCount[0];
             return false;
         }
-        
     }//isInDictionary
-    
-    
-
 }//PA4
