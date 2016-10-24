@@ -1,0 +1,182 @@
+/*
+ * @name Programming Assignment 4
+ * @file PA4.java
+ * @author Eric Schulze
+ * @version 1.0 10/24/16
+ *
+ */
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+public class PA4{
+
+	//Attributes
+	MyLinkedList[] dictionary;
+    long wordsFound;
+    long wordsNotFound;
+    long comparisonsIfWordFound;
+    long comparisonsIfWordNotFound;
+    
+
+/***************************************************************************************/
+/***************************************************************************************/
+
+	//Constructors
+	public PA4(){
+		//instantiate array
+		dictionary = new MyLinkedList[26];
+
+		//instantiate dictionary linked lists
+		for(int i = 0; i < 26; i++){
+			dictionary[i] = new MyLinkedList<String>();
+		}//end for
+        
+        //instantiate counters
+        wordsFound = 0;
+        wordsNotFound = 0;
+        comparisonsIfWordFound = 0;
+        comparisonsIfWordNotFound = 0;
+	}
+
+/***************************************************************************************/
+/***************************************************************************************/
+
+	//methods
+	public static void main(String[] args){
+		PA4 pa = new PA4();
+        
+		pa.dictionaryPopulate();
+        
+        long start = System.nanoTime();
+        pa.compareFileAgainstDictionary("oliver.txt");
+        long stop = System.nanoTime();
+        
+        System.out.println("\nTotal words compared to dictionary: " + (pa.wordsFound + pa.wordsNotFound));
+        System.out.println("\nTotal words found in dictionary: " + pa.wordsFound);
+        System.out.println("Total words not found in dictionary: " + pa.wordsNotFound);
+        System.out.println("\nTotal comparisons: " + (pa.comparisonsIfWordFound + pa.comparisonsIfWordNotFound));
+        System.out.println("Total comparisons if word was found: " + pa.comparisonsIfWordFound);
+        System.out.println("Total comparisons if word was not found: " + pa.comparisonsIfWordNotFound);
+        System.out.println("\nAverage number of comparisons if word was found: " + (pa.comparisonsIfWordFound / pa.wordsFound));
+        System.out.println("\nAverage number of comparisons if word was not found: " + (pa.comparisonsIfWordNotFound / pa.wordsNotFound));
+        System.out.println("\nTime required for comparison: " + ((stop - start) / Math.pow(10,9)) + " seconds");
+
+	}//main
+	
+    /***************************************************************************************/
+	
+	/* public void dictionaryPopulate populates the dictionary attribute using the provided
+	 *		random_dictionary.txt file
+ 	 * 
+	 * @param none
+	 * @return none
+	 *
+	 * @requires random_dictionary.txt to be accessible
+	 * @ensures dictionary attribute is populated with words from random_dictionary.txt and organized 
+	 * 		according to the first letter of the word, with one starting letter per linked list
+	 */
+	public void dictionaryPopulate(){
+		//read in file, assign each word to correct linked list 
+		try{
+			File file = new File("random_dictionary.txt");
+			Scanner input = new Scanner(file);
+			String word;
+			while(input.hasNext()){
+				word = input.next();
+                if(word.charAt(0) < 97)
+                    word = word.toLowerCase();
+				dictionary[word.charAt(0) - 97].add(word);
+			}//end while
+		}//end try
+
+		catch(IOException e){
+			System.out.println("Unable to read file");
+		}//end catch
+	}
+    
+    /***************************************************************************************/
+    
+    /* public void compareFileAgainstDictionary
+     *
+     *
+     * @param fileName: name of the file to do a word-by-word comparison to dictionary
+     * @return none
+     *
+     * @requires
+     * @ensures
+     *
+     */
+    public void compareFileAgainstDictionary(String fileName){
+        File file = new File(fileName);
+        try{
+            Scanner input = new Scanner(file);
+            String word = "";
+            String comparison = "";
+            char currentChar;
+            while(input.hasNext()){
+                word = input.next();
+                for(int i = 0; i < word.length(); i++){
+                    currentChar = word.charAt(i);
+                    if(Character.isLetter(currentChar) && Character.isLowerCase(currentChar)){
+                        comparison += Character.toString(currentChar);
+                    }
+                    else if(Character.isLetter(currentChar) && Character.isUpperCase(currentChar)){
+                        Character.toLowerCase(currentChar);
+                        comparison.concat(Character.toString(currentChar));
+                    }
+                    else if(currentChar == 45){
+                        if(comparison.length() > 0){
+                            if(isInDictionary(comparison))
+                                wordsFound++;
+                            else
+                                wordsNotFound++;
+                            comparison = "";
+                        }
+                    }
+                }//end for
+                
+                if(comparison.length() > 0){
+                    if(isInDictionary(comparison))
+                        wordsFound++;
+                    else
+                        wordsNotFound++;
+                }
+                comparison = "";
+            }//end while
+            System.out.println("File Successfully Compared to Dictionary");
+        }//end try
+        
+        catch(IOException e){
+            System.out.println("Unable to read file " + fileName);
+        }//end catch
+    }//compareFileAgainstDictionary
+    
+    /***************************************************************************************/
+    
+    /* public boolean isInDictionary returns true if the incoming word is in the dictionary array and
+     *          returns false otherwise
+     *
+     * @param word: string to check to see if it is contained in the dictionary
+     * @return boolean
+     *
+     * @requires
+     * @ensures
+     *
+     */
+    public boolean isInDictionary(String word){
+        int[] comparisonsCount = new int[1];
+        if(dictionary[word.charAt(0) - 97].contains(word, comparisonsCount)){
+            comparisonsIfWordFound += comparisonsCount[0];
+            return true;
+        }
+        else{
+            comparisonsIfWordNotFound += comparisonsCount[0];
+            return false;
+        }
+        
+    }//isInDictionary
+    
+    
+
+}//PA4
