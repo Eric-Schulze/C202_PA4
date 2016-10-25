@@ -88,6 +88,7 @@ public class PA4{
                     word = word.toLowerCase();
 				dictionary[word.charAt(0) - 97].add(word);
 			}//end while
+            input.close();
 		}//end try
 
 		catch(IOException e){
@@ -146,6 +147,7 @@ public class PA4{
                 }
                 comparison = "";
             }//end while
+            input.close();
             System.out.println("File Successfully Compared to Dictionary");
         }//end try
         
